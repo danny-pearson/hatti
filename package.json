@@ -1,0 +1,21 @@
+{
+  "name": "hatti",
+  "private": true,
+  "version": "0.0.1",
+  "main": "index.js",
+  "author": "dannypearson",
+  "license": "MIT",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "packageManager": "yarn@1.22.22",
+  "scripts": {
+    "dev": "turbo run dev"
+  },
+  "devDependencies": {
+    "eslint": "^9.37.0",
+    "turbo": "^2.5.8",
+    "typescript": "^5.9.3"
+  }
+}
