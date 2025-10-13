@@ -11,11 +11,18 @@
   ],
   "packageManager": "yarn@1.22.22",
   "scripts": {
-    "dev": "turbo run dev"
+    "dev": "turbo run dev",
+    "build": "turbo run build",
+    "test": "turbo run test"
   },
   "devDependencies": {
+    "@stylistic/eslint-plugin": "^5.4.0",
+    "@typescript-eslint/eslint-plugin": "^8.46.0",
+    "@typescript-eslint/parser": "^8.46.0",
     "eslint": "^9.37.0",
     "turbo": "^2.5.8",
-    "typescript": "^5.9.3"
-  }
+    "typescript": "^5.9.3",
+    "vitest": "^3.2.4"
+  },
+  "dependencies": {}
 }
