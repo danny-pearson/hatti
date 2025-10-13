@@ -1,3 +1,4 @@
 .turbo
+.github
 node_modules
 dist

@@ -1,22 +1,44 @@
-import stylisticPlugin from '@stylistic/eslint-plugin';
-import tslintPlugin from '@typescript-eslint/eslint-plugin';
-import tsParser from '@typescript-eslint/parser';
+import { defineConfig } from 'eslint/config';
+import parserTs from '@typescript-eslint/parser';
+import pluginStylistic from '@stylistic/eslint-plugin';
+import pluginTsLint from '@typescript-eslint/eslint-plugin';
 
-const jsConfig = {
+const baseConfig = {
+    rules: {
+        'arrow-body-style': 'off',
+        'no-bitwise':       'off',
+        'no-plusplus':      'off',
+    },
+};
+
+const stylisticConfig = {
     plugins: {
-        '@stylistic': stylisticPlugin,
+        '@stylistic': pluginStylistic,
     },
 
     rules: {
         '@stylistic/arrow-parens': ['error', 'always'],
         '@stylistic/brace-style':  ['error', '1tbs'],
         '@stylistic/comma-dangle': ['error', 'always-multiline'],
+        '@stylistic/comma-spacing': 'error',
         '@stylistic/indent':       ['error', 4],
 
         '@stylistic/key-spacing': ['error', {
             'afterColon':  true,
             'beforeColon': false,
             'mode':        'minimum',
+        }],
+
+        '@stylistic/max-len': ['warn', {
+            'code':     120,
+            'tabWidth': 4,
+
+            'ignoreComments':         true,
+            'ignoreUrls':             true,
+            'ignoreStrings':          true,
+            'ignoreTemplateLiterals': true,
+            'ignoreRegExpLiterals':   true,
+            'ignorePattern':          '(d="([\\s\\S]*?)"|data:image/[^;]+;base64)',
         }],
 
         '@stylistic/member-delimiter-style': ['error', {
@@ -33,6 +55,12 @@ const jsConfig = {
             'multilineDetection': 'brackets',
         }],
 
+        '@stylistic/no-multiple-empty-lines': ['error', {
+            max:    1,
+            maxEOF: 1,
+            maxBOF: 0,
+        }],
+
         '@stylistic/no-multi-spaces': ['error', {
             'exceptions': {
                 'ArrayExpression':      true,
@@ -42,6 +70,8 @@ const jsConfig = {
                 'VariableDeclarator':   true,
             },
         }],
+
+        '@stylistic/no-whitespace-before-property': 'error',
 
         '@stylistic/object-curly-newline': ['error', {
             'ObjectExpression': {
@@ -69,11 +99,15 @@ const jsConfig = {
             },
         }],
 
+        '@stylistic/padded-blocks': ['error', 'never'],
+
         '@stylistic/quotes': ['error', 'single', {
             'allowTemplateLiterals': 'always',
         }],
 
         '@stylistic/semi':   ['error', 'always'],
+
+        '@stylistic/semi-spacing': 'error',
 
         '@stylistic/space-before-function-paren': ['error', {
             'anonymous':  'always',
@@ -81,9 +115,7 @@ const jsConfig = {
             'asyncArrow': 'always',
         }],
 
-        'arrow-body-style': 'off',
-        'no-bitwise':       'off',
-        'no-plusplus':      'off',
+        '@stylistic/no-trailing-spaces': 'error',
     },
 };
 
@@ -91,7 +123,7 @@ const tsConfig = {
     files: ['**/*.ts'],
 
     languageOptions: {
-        parser: tsParser,
+        parser: parserTs,
         parserOptions: {
             ecmaVersion: 2023,
             sourceType: 'module',
@@ -100,30 +132,42 @@ const tsConfig = {
     },
 
     plugins: {
-        '@typescript-eslint': tslintPlugin,
+        '@typescript-eslint': pluginTsLint,
     },
 
     rules: {
-        '@stylistic/max-len': ['warn', {
-            'code':     120,
-            'tabWidth': 4,
+        '@typescript-eslint/no-non-null-assertion': 'off',
 
-            'ignoreComments':         true,
-            'ignoreUrls':             true,
-            'ignoreStrings':          true,
-            'ignoreTemplateLiterals': true,
-            'ignoreRegExpLiterals':   true,
-            'ignorePattern':          '(d="([\\s\\S]*?)"|data:image/[^;]+;base64)',
+        '@typescript-eslint/consistent-type-imports': ['error', {
+            'disallowTypeAnnotations': false,
+            'prefer':                  'type-imports',
         }],
 
         '@typescript-eslint/no-unused-vars': ['warn', {
             'vars': 'all',
             'args': 'after-used',
-            'ignoreRestSiblings': true,
-            'argsIgnorePattern': '^_',
+
+            'ignoreRestSiblings':        true,
+            'argsIgnorePattern':         '^_',
             'caughtErrorsIgnorePattern': '^_',
         }],
+
+        '@typescript-eslint/no-import-type-side-effects': 'error',
     },
 };
 
-export default [jsConfig, tsConfig];
+const ignoresConfig = {
+    ignores: [
+        '**/dist',
+        '**/node_modules',
+    ],
+};
+
+export default defineConfig([
+    pluginTsLint.configs['flat/eslint-recommended'],
+    pluginTsLint.configs['flat/recommended'],
+    baseConfig,
+    stylisticConfig,
+    tsConfig,
+    ignoresConfig,
+]);

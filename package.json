@@ -5,6 +5,7 @@
   "main": "index.js",
   "author": "dannypearson",
   "license": "MIT",
+  "type": "module",
   "workspaces": [
     "apps/*",
     "packages/*"
