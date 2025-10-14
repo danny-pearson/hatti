@@ -1,7 +1,7 @@
 import type { TupleRGB, TupleRGBA } from './types';
 
-const _clamp8  = (value: number) => Math.min(Math.max(value | 0, 0), 0xff);
-const _clamp12 = (value: number) => Math.min(Math.max(value | 0, 0), 0xfff);
+const _clamp8  = (value: number) => Math.min(Math.max(Math.trunc(value), 0), 0xff);
+const _clamp12 = (value: number) => Math.min(Math.max(Math.trunc(value), 0), 0xfff);
 const _clamp32 = (value: number) => Math.min(Math.max(Math.trunc(value), 0), 0xffffffff);
 
 export const rgb = (r: number, g: number, b: number): number => {
@@ -61,8 +61,6 @@ export const uint32ToRgba = (value: number): TupleRGBA => {
     }
 
     const _value = _clamp32(value);
-
-    console.log(value, _value);
 
     return [
         (_value & 0xff000000) >>> 24,
