@@ -1,4 +1,5 @@
 .turbo
 .github
+.claude
 node_modules
 dist
