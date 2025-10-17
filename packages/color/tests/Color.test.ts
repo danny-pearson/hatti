@@ -140,7 +140,7 @@ describe('Color', () => {
 
             expand12to24(0x1fff);
 
-            expect(warn).toHaveBeenCalledWith('[expand12to24]: Value must be no more than 12bits');
+            expect(warn).toHaveBeenCalledWith('[expand12to24]: Value is greater than 12bits');
 
             warn.mockRestore();
         });
