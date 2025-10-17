@@ -6,8 +6,6 @@
     "declaration": true,
     "declarationMap": true,
     "emitDeclarationOnly": false,
-    "module": "ESNext",
-    "target": "ES2022",
     "moduleResolution": "bundler",
     "esModuleInterop": true,
     "strict": true,
