@@ -10,14 +10,17 @@ class ImageBuffer extends ImageData {
 
     public constructor(width: number, height: number);
     public constructor(data: Uint8ClampedArray<ArrayBuffer>, width: number, height: number);
-    public constructor(dataOrWidth: number | Uint8ClampedArray<ArrayBuffer>, width: number, height?: number) {
-        const byteArr = isNumber(dataOrWidth)
-            ? new Uint8ClampedArray(dataOrWidth * width * 4)
-            : dataOrWidth;
+    public constructor(dataOrWidth: number | Uint8ClampedArray<ArrayBuffer>, widthOrHeight: number, height?: number) {
+        if (isNumber(dataOrWidth)) {
+            const byteArr = new Uint8ClampedArray(dataOrWidth * widthOrHeight * 4);
+            super(byteArr, dataOrWidth, widthOrHeight);
 
-        super(byteArr, width, height);
+            this.#texels = new Uint32Array(byteArr.buffer);
+        } else {
+            super(dataOrWidth, widthOrHeight, height);
 
-        this.#texels = new Uint32Array(byteArr.buffer);
+            this.#texels = new Uint32Array(dataOrWidth.buffer);
+        }
     }
 
     /**
@@ -42,7 +45,7 @@ class ImageBuffer extends ImageData {
      * @param   y - Y coordinate
      * @returns     Color as uint32
      */
-    public atUnsafe(x: number, y: number): number {
+    public atUnchecked(x: number, y: number): number {
         return this.#texels[x + y * this.width]!;
     }
 
