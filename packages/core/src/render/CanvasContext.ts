@@ -190,24 +190,32 @@ class CanvasContext extends ContextProxy implements CanvasRenderingContext2D {
         }
 
         const points = this._currentShape;
+        const firstPoint = points[0];
+        const secondPoint = points[1];
 
-        points.push(points[0]);
+        if (!firstPoint || !secondPoint) return;
 
-        this.moveTo(points[1][0], points[1][1]);
+        points.push(firstPoint);
+
+        this.moveTo(secondPoint[0], secondPoint[1]);
 
         for (let i = 1; i < points.length - 1; i++) {
-            if (points[i][2] === VertexKind.NORMAL) {
-                this.lineTo(points[i + 1][0], points[i + 1][1]);
+            const currentPoint = points[i];
+            const nextPoint = points[i + 1];
 
+            if (!currentPoint || !nextPoint) continue;
+
+            if (currentPoint[2] === VertexKind.NORMAL) {
+                this.lineTo(nextPoint[0], nextPoint[1]);
                 continue;
             }
 
-            if (points[i][2] === VertexKind.CURVE) {
+            if (currentPoint[2] === VertexKind.CURVE) {
                 if (i + 2 >= points.length) break;
 
-                const p0 = points[i - 1] || points[i];
-                const p1 = points[i];
-                const p2 = points[i + 1] || points[i];
+                const p0 = points[i - 1] || currentPoint;
+                const p1 = currentPoint;
+                const p2 = nextPoint;
                 const p3 = points[i + 2] || p2;
 
                 const tension = 1 - this.curveTension;
@@ -218,7 +226,6 @@ class CanvasContext extends ContextProxy implements CanvasRenderingContext2D {
                 const cp2y = p2[1] - (p3[1] - p1[1]) * tension / 6;
 
                 this.bezierCurveTo(cp1x, cp1y, cp2x, cp2y, p2[0], p2[1]);
-
                 continue;
             }
         }
@@ -233,11 +240,9 @@ class CanvasContext extends ContextProxy implements CanvasRenderingContext2D {
         if (this._debugShapeVertices) {
             this.save();
 
-            for (let i = 0; i < points.length - 1; i++) {
+            for (const point of points.slice(0, -1)) {
                 this.fillStyle = '#f00';
-
-                this.circle(points[i][0], points[i][1], 4);
-                this.fill();
+                this.circle(point[0], point[1], 4, FILL);
             }
 
             this.restore();
