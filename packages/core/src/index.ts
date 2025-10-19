@@ -1,4 +1,5 @@
 export * as Core from './Core.js';
+export { default as loop } from './loop.js';
 export { default as Time } from './Time.js';
 export { default as EventEmitter } from './EventEmitter.js';
 export * from './render/flags.js';
