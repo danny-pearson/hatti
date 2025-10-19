@@ -15,6 +15,7 @@
   },
   "dependencies": {
     "@hatti/bitwise": "^0.0.1",
+    "@hatti/color": "^0.0.1",
     "@hatti/math": "^0.0.1",
     "@hatti/shared": "^0.0.1"
   },
