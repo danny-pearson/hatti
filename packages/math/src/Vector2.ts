@@ -1,3 +1,4 @@
+import { prng } from '@hatti/random';
 import { TAU } from './constants.js';
 
 /**
@@ -106,7 +107,7 @@ class Vector2 {
      * @returns The random vector
      */
     public static random(): Vector2 {
-        return this.fromAngle(Math.random() * TAU);
+        return this.fromAngle(prng.random(1) * TAU);
     }
 
     /**
@@ -768,7 +769,7 @@ class Vector2 {
      * @returns This vector
      */
     public toRandom(): Vector2 {
-        const angle = Math.random() * TAU;
+        const angle = prng.random(1) * TAU;
 
         this.x = Math.cos(angle);
         this.y = Math.sin(angle);

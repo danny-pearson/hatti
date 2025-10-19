@@ -1,5 +1,6 @@
 import { TAU } from './constants.js';
 import type { Vector2Like } from '.';
+import { prng } from '@hatti/random';
 
 /**
  * Adds two vectors.
@@ -1190,7 +1191,7 @@ export const fromAngleMut = (out: Vector2Like, angle: number, length = 1): Vecto
  * @returns The random vector
  */
 export const random = (): Vector2Like => {
-    return fromAngle(Math.random() * TAU);
+    return fromAngle(prng.random(1) * TAU);
 };
 
 /**
@@ -1200,7 +1201,7 @@ export const random = (): Vector2Like => {
  * @returns       The output vector
  */
 export const randomMut = (out: Vector2Like): Vector2Like => {
-    return fromAngleMut(out, Math.random() * TAU);
+    return fromAngleMut(out, prng.random(1) * TAU);
 };
 
 /**
