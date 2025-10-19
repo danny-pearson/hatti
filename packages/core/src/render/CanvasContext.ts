@@ -1,17 +1,9 @@
 import { FILL, STROKE } from './flags.js';
 import { TAU, clamp } from '@hatti/math';
-// import Matrix3 from '../math/Matrix3.js';
 import { Bitmask } from '@hatti/bitwise';
 import ContextProxy from './ContextProxy';
 import type { ConstEnum } from '@hatti/shared';
 // import ImageBuffer from './ImageBuffer.js';
-
-// interface CanvasImageData {
-//     putImageData(imagedata: ImageData | ImageBuffer, dx: number, dy: number): void;
-//     putImageData(imagedata: ImageData | ImageBuffer, dx: number, dy: number, dirtyX: number, dirtyY: number, dirtyWidth: number, dirtyHeight: number): void
-// }
-
-// interface CanvasRenderingContext2D extends CanvasImageData { }
 
 const VertexKind = {
     NORMAL: 0,
@@ -28,13 +20,9 @@ class CanvasContext extends ContextProxy implements CanvasRenderingContext2D {
 
     public curveTension: number;
 
-    // public matrix: Matrix3;
-
     public zoom: number;
 
     private _virtualWidth?: number;
-
-    private _isUsingVirtualCoords: boolean;
 
     private _currentShape: ShapeVertex[] | null;
 
@@ -50,13 +38,10 @@ class CanvasContext extends ContextProxy implements CanvasRenderingContext2D {
 
         this.curveTension = 0;
 
-        // this.matrix = Matrix3.identity();
-
         this.zoom = 1;
 
         this.setZoom(this.zoom);
 
-        this._isUsingVirtualCoords = false;
         this._currentShape = null;
         this._debugShapeVertices = false;
         this._clearColor = null;
@@ -268,7 +253,6 @@ class CanvasContext extends ContextProxy implements CanvasRenderingContext2D {
     }
 
     public useVirtualCoordinates(width: number) {
-        this._isUsingVirtualCoords = true;
         this._virtualWidth = width;
 
         const virtualHeight = width * this.aspectRatio;

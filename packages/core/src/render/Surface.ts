@@ -6,35 +6,35 @@ import CanvasContext from './CanvasContext.js';
  *
  * Supports multiple initialisation patterns:
  * - New canvas with dimensions: `new Surface(800, 600)`
- * - New offscreen canvas: `new Surface(800, 600, true)`
- * - Attach to DOM element: `new Surface(element, 800, 600)`
- * - Wrap existing canvas: `new Surface(canvasElement)`
+ * - New offscreen canvas:       `new Surface(800, 600, true)`
+ * - Attach to DOM element:      `new Surface(element, 800, 600)`
+ * - Wrap existing canvas:       `new Surface(canvasElement)`
  *
  * For fullscreen canvases, use `setFullscreen()` to enable automatic scaling and resize handling:
  * ```ts
  * const surface = new Surface(container, 800, 600);
  * surface.setFullscreen(true); // Enable fullscreen mode with resize listener
  *
- * // Later, you can disable it
+ * Later, you can disable it
  * surface.setFullscreen(false); // Disable fullscreen, remove listener, reset styles
  * ```
  */
 class Surface {
-    public readonly el: HTMLCanvasElement | OffscreenCanvas;
+    public readonly el:      HTMLCanvasElement | OffscreenCanvas;
 
     public readonly context: CanvasContext;
 
     public readonly events?: EventEmitter;
 
-    public realWidth!: number;
+    public realWidth!:       number;
 
-    public realHeight!: number;
+    public realHeight!:      number;
 
-    public scaleFactor!: number;
+    public scaleFactor!:     number;
 
-    private _isFullscreen: boolean = false;
+    private _isFullscreen:   boolean;
 
-    private _resizeHandler?: () => void;
+    private _resizeHandler?: VoidFunction;
 
     constructor(width: number, height: number, offscreen?: boolean);
     constructor(rootEl: Element, width: number, height: number);
@@ -44,6 +44,8 @@ class Surface {
         widthOrHeight?: number,
         heightOrOffscreen?: number | boolean,
     ) {
+        this._isFullscreen = false;
+
         if (rootElOrWidthOrCanvas instanceof HTMLCanvasElement || rootElOrWidthOrCanvas instanceof OffscreenCanvas) {
             this.el = rootElOrWidthOrCanvas;
 
@@ -128,7 +130,6 @@ class Surface {
             return this;
         }
 
-        // If already in the desired state, do nothing
         if (this._isFullscreen === enabled) {
             return this;
         }
@@ -136,18 +137,18 @@ class Surface {
         this._isFullscreen = enabled;
 
         if (enabled) {
-            // Enable fullscreen mode
             this._resizeHandler = () => this.computeFullscreen();
+
             window.addEventListener('resize', this._resizeHandler);
+
             this.computeFullscreen();
         } else {
-            // Disable fullscreen mode
             if (this._resizeHandler) {
                 window.removeEventListener('resize', this._resizeHandler);
+
                 this._resizeHandler = undefined;
             }
 
-            // Reset to original dimensions
             this.scaleFactor = 1;
             this.realWidth   = this.el.width;
             this.realHeight  = this.el.height;
