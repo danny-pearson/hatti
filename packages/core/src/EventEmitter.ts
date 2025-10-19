@@ -8,7 +8,10 @@ interface EmitterEvent<Type, Key extends keyof Type> {
     readonly payload: Type[Key];
 }
 
-type EventHandler<Type, Key extends keyof Type> = (event: EmitterEvent<Type, Key>) => void;
+interface EventHandler<Type, Key extends keyof Type> {
+    (event: EmitterEvent<Type, Key>): void;
+    __once__?: boolean;
+}
 
 class EventEmitter<Type = Record<string, unknown>> {
     protected listeners: Map<keyof Type, EventHandler<Type, keyof Type>[]>;
@@ -29,10 +32,8 @@ class EventEmitter<Type = Record<string, unknown>> {
         let fn: EventHandler<Type, Key>;
 
         if (options?.once) {
-            fn = (e) => {
-                handler(e);
-                this.unlisten(event, fn);
-            };
+            fn = (e) => handler(e);
+            fn.__once__ = true;
         } else {
             fn = handler;
         }
@@ -53,39 +54,50 @@ class EventEmitter<Type = Record<string, unknown>> {
         if (!this.listeners.has(event)) return;
 
         const _listeners = this.listeners.get(event) as (typeof handler)[];
+        const index      = _listeners.indexOf(handler);
+
+        if (index === -1) return;
 
         if (_listeners.length < 2) {
             this.listeners.delete(event);
             return;
         }
 
-        const index = _listeners.indexOf(handler);
-
-        if (index === -1) return;
-
         _listeners.splice(index, 1);
     };
 
-    public dispatch = <Key extends keyof Type>(
+    public dispatch<Key extends keyof Type>(
         event:    Key,
         payload?: Type[Key],
-    ): void => {
+    ): void {
         const _listeners = this.listeners.get(event);
 
         if (!_listeners?.length) return;
 
         const _payload = payload as Type[Key];
 
-        _listeners.forEach((handler: EventHandler<Type, Key>) => {
+        const cleanupArr = [];
+
+        for (const handler of _listeners) {
             try {
                 handler({
                     name: event,
                     payload: _payload,
                 });
+
+                if (handler.__once__) {
+                    cleanupArr.push(handler);
+                }
             } catch (err) {
                 console.error('[EventEmitter::dispatch]:', err);
             }
-        });
+        }
+
+        if (!cleanupArr.length) return;
+
+        for (const handler of cleanupArr) {
+            this.unlisten(event, handler);
+        }
     };
 }
 
