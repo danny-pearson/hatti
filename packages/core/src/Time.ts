@@ -40,7 +40,7 @@ class Time {
             this.accumulator    = 0;
             this.fpsSampleCount = 0;
 
-            console.log(self.fps);
+            // console.log(self.fps);
         }
     }
 
