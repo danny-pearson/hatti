@@ -126,3 +126,52 @@ if (typeof OffscreenCanvas !== 'undefined') {
         return null;
     } as any;
 }
+
+// Patch Image to auto-trigger load events for testing
+if (typeof Image !== 'undefined') {
+    const originalImageSrcDescriptor = Object.getOwnPropertyDescriptor(HTMLImageElement.prototype, 'src');
+    const originalImageSrcSet = originalImageSrcDescriptor?.set;
+
+    Object.defineProperty(HTMLImageElement.prototype, 'src', {
+        set(this: HTMLImageElement, value: string) {
+            originalImageSrcSet?.call(this, value);
+
+            // Set dimensions for testing
+            Object.defineProperty(this, 'naturalWidth', { value: 100, writable: true });
+            Object.defineProperty(this, 'naturalHeight', { value: 100, writable: true });
+
+            // Auto-trigger load event asynchronously
+            setTimeout(() => {
+                this.dispatchEvent(new Event('load'));
+            }, 0);
+        },
+        get(this: HTMLImageElement) {
+            return originalImageSrcDescriptor?.get?.call(this) || '';
+        },
+    });
+}
+
+// Mock global fetch for ImageLoader tests
+if (typeof fetch === 'undefined' || !vi.isMockFunction(fetch)) {
+    global.fetch = vi.fn(async (_input: RequestInfo | URL, _init?: RequestInit) => {
+        const mockBlob = new Blob(['fake image data'], { type: 'image/png' });
+
+        return Promise.resolve({
+            ok: true,
+            status: 200,
+            statusText: 'OK',
+            blob: async () => mockBlob,
+        } as Response);
+    });
+}
+
+// Mock createImageBitmap (not available in jsdom)
+if (typeof createImageBitmap === 'undefined') {
+    global.createImageBitmap = vi.fn(async (_image: ImageBitmapSource, _options?: ImageBitmapOptions) => {
+        return Promise.resolve({
+            width: 100,
+            height: 100,
+            close: vi.fn(),
+        } as unknown as ImageBitmap);
+    }) as typeof createImageBitmap;
+}
