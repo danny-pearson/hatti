@@ -42,7 +42,7 @@ describe('ImageBuffer', () => {
     describe('at()', () => {
         it('should get color at specified coordinates', () => {
             const buffer = new ImageBuffer(10, 10);
-            buffer.setTexelColor(3, 4, 0xFF0000FF); // Red
+            buffer.setTexel(3, 4, 0xFF0000FF); // Red
 
             const color = buffer.at(3, 4);
 
@@ -77,8 +77,8 @@ describe('ImageBuffer', () => {
 
         it('should work at buffer boundaries', () => {
             const buffer = new ImageBuffer(10, 10);
-            buffer.setTexelColor(0, 0, 0xFF0000FF);
-            buffer.setTexelColor(9, 9, 0x00FF00FF);
+            buffer.setTexel(0, 0, 0xFF0000FF);
+            buffer.setTexel(9, 9, 0x00FF00FF);
 
             expect(buffer.at(0, 0)).toBe(0xFF0000FF);
             expect(buffer.at(9, 9)).toBe(0x00FF00FF);
@@ -88,7 +88,7 @@ describe('ImageBuffer', () => {
     describe('atUnchecked()', () => {
         it('should get color at specified coordinates without bounds check', () => {
             const buffer = new ImageBuffer(10, 10);
-            buffer.setTexelColor(3, 4, 0xFF0000FF);
+            buffer.setTexel(3, 4, 0xFF0000FF);
 
             const color = buffer.atUnchecked(3, 4);
 
@@ -107,17 +107,17 @@ describe('ImageBuffer', () => {
             const buffer = new ImageBuffer(100, 100);
 
             // Just verify it works the same for valid coordinates
-            buffer.setTexelColor(50, 50, 0xFF0000FF);
+            buffer.setTexel(50, 50, 0xFF0000FF);
 
             expect(buffer.atUnchecked(50, 50)).toBe(buffer.at(50, 50));
         });
     });
 
-    describe('setTexelColor()', () => {
+    describe('setTexel()', () => {
         it('should set color using uint32 value', () => {
             const buffer = new ImageBuffer(10, 10);
 
-            buffer.setTexelColor(5, 5, 0xFF0000FF);
+            buffer.setTexel(5, 5, 0xFF0000FF);
 
             expect(buffer.at(5, 5)).toBe(0xFF0000FF);
         });
@@ -125,7 +125,7 @@ describe('ImageBuffer', () => {
         it('should set color using hex string', () => {
             const buffer = new ImageBuffer(10, 10);
 
-            buffer.setTexelColor(5, 5, '#ff0000');
+            buffer.setTexel(5, 5, '#ff0000');
 
             // Note: hexToUint32 should convert #ff0000 to uint32 with alpha
             expect(buffer.at(5, 5)).toBeTypeOf('number');
@@ -134,36 +134,36 @@ describe('ImageBuffer', () => {
         it('should throw RangeError for negative x coordinate', () => {
             const buffer = new ImageBuffer(10, 10);
 
-            expect(() => buffer.setTexelColor(-1, 5, 0xFF0000FF)).toThrow(RangeError);
-            expect(() => buffer.setTexelColor(-1, 5, 0xFF0000FF)).toThrow(
-                '[ImageBuffer::setTexelColor]: Coordinates (-1, 5) out of bounds',
+            expect(() => buffer.setTexel(-1, 5, 0xFF0000FF)).toThrow(RangeError);
+            expect(() => buffer.setTexel(-1, 5, 0xFF0000FF)).toThrow(
+                '[ImageBuffer::setTexel]: Coordinates (-1, 5) out of bounds',
             );
         });
 
         it('should throw RangeError for negative y coordinate', () => {
             const buffer = new ImageBuffer(10, 10);
 
-            expect(() => buffer.setTexelColor(5, -1, 0xFF0000FF)).toThrow(RangeError);
+            expect(() => buffer.setTexel(5, -1, 0xFF0000FF)).toThrow(RangeError);
         });
 
         it('should throw RangeError for x >= width', () => {
             const buffer = new ImageBuffer(10, 10);
 
-            expect(() => buffer.setTexelColor(10, 5, 0xFF0000FF)).toThrow(RangeError);
+            expect(() => buffer.setTexel(10, 5, 0xFF0000FF)).toThrow(RangeError);
         });
 
         it('should throw RangeError for y >= height', () => {
             const buffer = new ImageBuffer(10, 10);
 
-            expect(() => buffer.setTexelColor(5, 10, 0xFF0000FF)).toThrow(RangeError);
+            expect(() => buffer.setTexel(5, 10, 0xFF0000FF)).toThrow(RangeError);
         });
 
         it('should work at buffer boundaries', () => {
             const buffer = new ImageBuffer(10, 10);
 
             expect(() => {
-                buffer.setTexelColor(0, 0, 0xFF0000FF);
-                buffer.setTexelColor(9, 9, 0x00FF00FF);
+                buffer.setTexel(0, 0, 0xFF0000FF);
+                buffer.setTexel(9, 9, 0x00FF00FF);
             }).not.toThrow();
 
             expect(buffer.at(0, 0)).toBe(0xFF0000FF);
@@ -173,11 +173,68 @@ describe('ImageBuffer', () => {
         it('should overwrite existing color', () => {
             const buffer = new ImageBuffer(10, 10);
 
-            buffer.setTexelColor(5, 5, 0xFF0000FF);
+            buffer.setTexel(5, 5, 0xFF0000FF);
             expect(buffer.at(5, 5)).toBe(0xFF0000FF);
 
-            buffer.setTexelColor(5, 5, 0x00FF00FF);
+            buffer.setTexel(5, 5, 0x00FF00FF);
             expect(buffer.at(5, 5)).toBe(0x00FF00FF);
+        });
+    });
+
+    describe('setTexelUnchecked()', () => {
+        it('should set color using uint32 value without bounds check', () => {
+            const buffer = new ImageBuffer(10, 10);
+
+            buffer.setTexelUnchecked(5, 5, 0xFF0000FF);
+
+            expect(buffer.at(5, 5)).toBe(0xFF0000FF);
+        });
+
+        it('should set color using hex string without bounds check', () => {
+            const buffer = new ImageBuffer(10, 10);
+
+            buffer.setTexelUnchecked(5, 5, '#ff0000');
+
+            expect(buffer.at(5, 5)).toBeTypeOf('number');
+        });
+
+        it('should not throw for out of bounds access (unsafe)', () => {
+            const buffer = new ImageBuffer(10, 10);
+
+            // This won't throw but will access memory outside bounds
+            // The behavior is undefined but it shouldn't crash
+            expect(() => buffer.setTexelUnchecked(100, 100, 0xFF0000FF)).not.toThrow();
+        });
+
+        it('should work at buffer boundaries', () => {
+            const buffer = new ImageBuffer(10, 10);
+
+            expect(() => {
+                buffer.setTexelUnchecked(0, 0, 0xFF0000FF);
+                buffer.setTexelUnchecked(9, 9, 0x00FF00FF);
+            }).not.toThrow();
+
+            expect(buffer.at(0, 0)).toBe(0xFF0000FF);
+            expect(buffer.at(9, 9)).toBe(0x00FF00FF);
+        });
+
+        it('should overwrite existing color', () => {
+            const buffer = new ImageBuffer(10, 10);
+
+            buffer.setTexelUnchecked(5, 5, 0xFF0000FF);
+            expect(buffer.at(5, 5)).toBe(0xFF0000FF);
+
+            buffer.setTexelUnchecked(5, 5, 0x00FF00FF);
+            expect(buffer.at(5, 5)).toBe(0x00FF00FF);
+        });
+
+        it('should work the same as setTexel() for valid coordinates', () => {
+            const buffer = new ImageBuffer(100, 100);
+
+            buffer.setTexelUnchecked(50, 50, 0xFF0000FF);
+            buffer.setTexel(51, 50, 0xFF0000FF);
+
+            expect(buffer.at(50, 50)).toBe(buffer.at(51, 50));
         });
     });
 
@@ -186,9 +243,9 @@ describe('ImageBuffer', () => {
             const buffer = new ImageBuffer(10, 10);
 
             // Set some colors
-            buffer.setTexelColor(0, 0, 0xFF0000FF);
-            buffer.setTexelColor(5, 5, 0x00FF00FF);
-            buffer.setTexelColor(9, 9, 0x0000FFFF);
+            buffer.setTexel(0, 0, 0xFF0000FF);
+            buffer.setTexel(5, 5, 0x00FF00FF);
+            buffer.setTexel(9, 9, 0x0000FFFF);
 
             buffer.clear();
 
@@ -236,8 +293,8 @@ describe('ImageBuffer', () => {
         it('should overwrite existing colors', () => {
             const buffer = new ImageBuffer(10, 10);
 
-            buffer.setTexelColor(0, 0, 0x00FF00FF);
-            buffer.setTexelColor(5, 5, 0x0000FFFF);
+            buffer.setTexel(0, 0, 0x00FF00FF);
+            buffer.setTexel(5, 5, 0x0000FFFF);
 
             buffer.fill(0xFF0000FF);
 
@@ -250,8 +307,8 @@ describe('ImageBuffer', () => {
     describe('clone()', () => {
         it('should create a deep copy of the buffer', () => {
             const original = new ImageBuffer(10, 10);
-            original.setTexelColor(3, 4, 0xFF0000FF);
-            original.setTexelColor(7, 8, 0x00FF00FF);
+            original.setTexel(3, 4, 0xFF0000FF);
+            original.setTexel(7, 8, 0x00FF00FF);
 
             const cloned = original.clone();
 
@@ -266,7 +323,7 @@ describe('ImageBuffer', () => {
             original.fill(0xFF0000FF);
 
             const cloned = original.clone();
-            cloned.setTexelColor(5, 5, 0x00FF00FF);
+            cloned.setTexel(5, 5, 0x00FF00FF);
 
             expect(cloned.at(5, 5)).toBe(0x00FF00FF);
             expect(original.at(5, 5)).toBe(0xFF0000FF);
@@ -290,10 +347,10 @@ describe('ImageBuffer', () => {
             const buffer = new ImageBuffer(10, 10);
 
             // Create a 2x2 red square at (3, 4)
-            buffer.setTexelColor(3, 4, 0xFF0000FF);
-            buffer.setTexelColor(4, 4, 0xFF0000FF);
-            buffer.setTexelColor(3, 5, 0xFF0000FF);
-            buffer.setTexelColor(4, 5, 0xFF0000FF);
+            buffer.setTexel(3, 4, 0xFF0000FF);
+            buffer.setTexel(4, 4, 0xFF0000FF);
+            buffer.setTexel(3, 5, 0xFF0000FF);
+            buffer.setTexel(4, 5, 0xFF0000FF);
 
             const region = buffer.getRegion(3, 4, 2, 2);
 
@@ -307,8 +364,8 @@ describe('ImageBuffer', () => {
 
         it('should extract region at buffer origin', () => {
             const buffer = new ImageBuffer(10, 10);
-            buffer.setTexelColor(0, 0, 0xFF0000FF);
-            buffer.setTexelColor(1, 0, 0x00FF00FF);
+            buffer.setTexel(0, 0, 0xFF0000FF);
+            buffer.setTexel(1, 0, 0x00FF00FF);
 
             const region = buffer.getRegion(0, 0, 2, 1);
 
@@ -318,7 +375,7 @@ describe('ImageBuffer', () => {
 
         it('should extract 1x1 region', () => {
             const buffer = new ImageBuffer(10, 10);
-            buffer.setTexelColor(5, 5, 0xFF0000FF);
+            buffer.setTexel(5, 5, 0xFF0000FF);
 
             const region = buffer.getRegion(5, 5, 1, 1);
 
@@ -332,7 +389,7 @@ describe('ImageBuffer', () => {
             buffer.fill(0xFF0000FF);
 
             const region = buffer.getRegion(2, 2, 3, 3);
-            region.setTexelColor(1, 1, 0x00FF00FF);
+            region.setTexel(1, 1, 0x00FF00FF);
 
             expect(region.at(1, 1)).toBe(0x00FF00FF);
             expect(buffer.at(3, 3)).toBe(0xFF0000FF); // Original unchanged
@@ -345,17 +402,92 @@ describe('ImageBuffer', () => {
         });
     });
 
+    describe('getRegionUnchecked()', () => {
+        it('should extract a rectangular region without bounds check', () => {
+            const buffer = new ImageBuffer(10, 10);
+
+            // Create a 2x2 red square at (3, 4)
+            buffer.setTexel(3, 4, 0xFF0000FF);
+            buffer.setTexel(4, 4, 0xFF0000FF);
+            buffer.setTexel(3, 5, 0xFF0000FF);
+            buffer.setTexel(4, 5, 0xFF0000FF);
+
+            const region = buffer.getRegionUnchecked(3, 4, 2, 2);
+
+            expect(region.width).toBe(2);
+            expect(region.height).toBe(2);
+            expect(region.at(0, 0)).toBe(0xFF0000FF);
+            expect(region.at(1, 0)).toBe(0xFF0000FF);
+            expect(region.at(0, 1)).toBe(0xFF0000FF);
+            expect(region.at(1, 1)).toBe(0xFF0000FF);
+        });
+
+        it('should extract region at buffer origin without bounds check', () => {
+            const buffer = new ImageBuffer(10, 10);
+            buffer.setTexel(0, 0, 0xFF0000FF);
+            buffer.setTexel(1, 0, 0x00FF00FF);
+
+            const region = buffer.getRegionUnchecked(0, 0, 2, 1);
+
+            expect(region.at(0, 0)).toBe(0xFF0000FF);
+            expect(region.at(1, 0)).toBe(0x00FF00FF);
+        });
+
+        it('should extract 1x1 region without bounds check', () => {
+            const buffer = new ImageBuffer(10, 10);
+            buffer.setTexel(5, 5, 0xFF0000FF);
+
+            const region = buffer.getRegionUnchecked(5, 5, 1, 1);
+
+            expect(region.width).toBe(1);
+            expect(region.height).toBe(1);
+            expect(region.at(0, 0)).toBe(0xFF0000FF);
+        });
+
+        it('should create independent region (mutations do not affect original)', () => {
+            const buffer = new ImageBuffer(10, 10);
+            buffer.fill(0xFF0000FF);
+
+            const region = buffer.getRegionUnchecked(2, 2, 3, 3);
+            region.setTexel(1, 1, 0x00FF00FF);
+
+            expect(region.at(1, 1)).toBe(0x00FF00FF);
+            expect(buffer.at(3, 3)).toBe(0xFF0000FF); // Original unchanged
+        });
+
+        it('should not throw for out of bounds access (unsafe)', () => {
+            const buffer = new ImageBuffer(10, 10);
+
+            // This won't throw but may produce undefined behavior
+            // Just verify it doesn't crash
+            expect(() => buffer.getRegionUnchecked(8, 8, 5, 5)).not.toThrow();
+        });
+
+        it('should work the same as getRegion() for valid coordinates', () => {
+            const buffer = new ImageBuffer(100, 100);
+            buffer.fill(0xFF0000FF);
+
+            const region1 = buffer.getRegionUnchecked(25, 25, 50, 50);
+            const region2 = buffer.getRegion(25, 25, 50, 50);
+
+            // Both should produce the same result for valid coordinates
+            expect(region1.width).toBe(region2.width);
+            expect(region1.height).toBe(region2.height);
+            expect(region1.at(0, 0)).toBe(region2.at(0, 0));
+        });
+    });
+
     describe('Symbol.iterator', () => {
         it('should iterate over all texels', () => {
             const buffer = new ImageBuffer(3, 2);
 
             // Fill with sequential values
-            buffer.setTexelColor(0, 0, 1);
-            buffer.setTexelColor(1, 0, 2);
-            buffer.setTexelColor(2, 0, 3);
-            buffer.setTexelColor(0, 1, 4);
-            buffer.setTexelColor(1, 1, 5);
-            buffer.setTexelColor(2, 1, 6);
+            buffer.setTexel(0, 0, 1);
+            buffer.setTexel(1, 0, 2);
+            buffer.setTexel(2, 0, 3);
+            buffer.setTexel(0, 1, 4);
+            buffer.setTexel(1, 1, 5);
+            buffer.setTexel(2, 1, 6);
 
             const texels = [...buffer];
 
@@ -366,10 +498,10 @@ describe('ImageBuffer', () => {
         it('should iterate in row-major order', () => {
             const buffer = new ImageBuffer(2, 2);
 
-            buffer.setTexelColor(0, 0, 1); // Top-left
-            buffer.setTexelColor(1, 0, 2); // Top-right
-            buffer.setTexelColor(0, 1, 3); // Bottom-left
-            buffer.setTexelColor(1, 1, 4); // Bottom-right
+            buffer.setTexel(0, 0, 1); // Top-left
+            buffer.setTexel(1, 0, 2); // Top-right
+            buffer.setTexel(0, 1, 3); // Bottom-left
+            buffer.setTexel(1, 1, 4); // Bottom-right
 
             const texels = [...buffer];
 
@@ -421,12 +553,12 @@ describe('ImageBuffer', () => {
 
             // Draw horizontal red line
             for (let x = 0; x < 20; x++) {
-                buffer.setTexelColor(x, 10, 0xFF0000FF);
+                buffer.setTexel(x, 10, 0xFF0000FF);
             }
 
             // Draw vertical green line
             for (let y = 0; y < 20; y++) {
-                buffer.setTexelColor(10, y, 0x00FF00FF);
+                buffer.setTexel(10, y, 0x00FF00FF);
             }
 
             // Check intersection is green (overwrites red)
