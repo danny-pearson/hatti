@@ -10,6 +10,8 @@ export {
 } from './PackedBuffer.js';
 
 export { default as StructuredBuffer } from './StructuredBuffer.js';
+export { default as AttributeTable } from './AttributeTable.js';
+export { default as DenseAttributeTable } from './DenseAttributeTable.js';
 export { default as ArrayPool } from './ArrayPool.js';
 export { default as QuadTreeNode } from './QuadTreeNode.js';
 export type { Bounds, CellValue } from './QuadTreeNode.js';
