@@ -4,16 +4,22 @@ import QuadTreeNode, { type CellValue } from '../dist/QuadTreeNode.js';
 describe('QuadTreeNode', () => {
     describe('constructor', () => {
         it('should create a node with bounds and value', () => {
-            const node = new QuadTreeNode({ x: 0, y: 0, size: 4 }, 1);
+            const node = new QuadTreeNode({
+                x: 0, y: 0, size: 4,
+            }, 1);
 
-            expect(node.bounds).toEqual({ x: 0, y: 0, size: 4 });
+            expect(node.bounds).toEqual({
+                x: 0, y: 0, size: 4,
+            });
             expect(node.value).toBe(1);
             expect(node.children).toEqual([]);
             expect(node.isLeaf).toBe(true);
         });
 
         it('should create a node with null value', () => {
-            const node = new QuadTreeNode({ x: 0, y: 0, size: 4 }, null);
+            const node = new QuadTreeNode({
+                x: 0, y: 0, size: 4,
+            }, null);
 
             expect(node.value).toBe(null);
         });
@@ -30,7 +36,9 @@ describe('QuadTreeNode', () => {
 
             expect(node.isLeaf).toBe(true);
             expect(node.value).toBe(1);
-            expect(node.bounds).toEqual({ x: 0, y: 0, size: 2 });
+            expect(node.bounds).toEqual({
+                x: 0, y: 0, size: 2,
+            });
         });
 
         it('should subdivide non-uniform region', () => {
@@ -221,7 +229,9 @@ describe('QuadTreeNode', () => {
 
     describe('isLeaf', () => {
         it('should identify leaf nodes correctly', () => {
-            const leaf = new QuadTreeNode({ x: 0, y: 0, size: 1 }, 1);
+            const leaf = new QuadTreeNode({
+                x: 0, y: 0, size: 1,
+            }, 1);
 
             expect(leaf.isLeaf).toBe(true);
         });

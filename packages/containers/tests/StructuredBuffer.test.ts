@@ -11,11 +11,13 @@ describe('StructuredBuffer', () => {
                 vy: number;
             };
 
-            const record = { x: 1, y: 1, vx: 1, vy: 1 };
+            const record = {
+                x: 1, y: 1, vx: 1, vy: 1,
+            };
             const buffer = new StructuredBuffer<ParticleStruct, Float32Array>(
                 record,
                 Float32Array,
-                10
+                10,
             );
 
             expect(buffer.stride).toBe(4);
@@ -30,11 +32,13 @@ describe('StructuredBuffer', () => {
                 mass: number;
             };
 
-            const record = { position: 2, velocity: 2, mass: 1 };
+            const record = {
+                position: 2, velocity: 2, mass: 1,
+            };
             const buffer = new StructuredBuffer<MixedStruct, Float32Array>(
                 record,
                 Float32Array,
-                5
+                5,
             );
 
             expect(buffer.stride).toBe(5); // 2 + 2 + 1
@@ -51,11 +55,13 @@ describe('StructuredBuffer', () => {
                 health: number;
             };
 
-            const record = { id: 1, mass: 1, health: 1 };
+            const record = {
+                id: 1, mass: 1, health: 1,
+            };
             const buffer = new StructuredBuffer<SimpleStruct, Float32Array>(
                 record,
                 Float32Array,
-                3
+                3,
             );
 
             buffer.setField(0, 'id', 100);
@@ -77,7 +83,7 @@ describe('StructuredBuffer', () => {
             const buffer = new StructuredBuffer<ScalarStruct, Float32Array>(
                 record,
                 Float32Array,
-                3
+                3,
             );
 
             buffer.setField(0, 'a', 10);
@@ -107,7 +113,7 @@ describe('StructuredBuffer', () => {
             const buffer = new StructuredBuffer<VectorStruct, Float32Array>(
                 record,
                 Float32Array,
-                2
+                2,
             );
 
             buffer.setField(0, 'position', [10, 20]);
@@ -127,7 +133,7 @@ describe('StructuredBuffer', () => {
             const buffer = new StructuredBuffer<Vector3Struct, Float32Array>(
                 record,
                 Float32Array,
-                2
+                2,
             );
 
             buffer.setField(0, 'position', [1, 2, 3]);
@@ -147,7 +153,7 @@ describe('StructuredBuffer', () => {
             const buffer = new StructuredBuffer<ColorStruct, Uint8Array>(
                 record,
                 Uint8Array,
-                2
+                2,
             );
 
             buffer.setField(0, 'color', [255, 128, 64, 255]);
@@ -167,11 +173,13 @@ describe('StructuredBuffer', () => {
                 mass: number;
             };
 
-            const record = { position: 2, velocity: 2, color: 4, mass: 1 };
+            const record = {
+                position: 2, velocity: 2, color: 4, mass: 1,
+            };
             const buffer = new StructuredBuffer<ParticleStruct, Float32Array>(
                 record,
                 Float32Array,
-                10
+                10,
             );
 
             buffer.setField(5, 'position', [100, 200]);
@@ -195,7 +203,7 @@ describe('StructuredBuffer', () => {
             const buffer = new StructuredBuffer<EntityStruct, Float32Array>(
                 record,
                 Float32Array,
-                3
+                3,
             );
 
             // Set all fields for entity 0
@@ -230,11 +238,13 @@ describe('StructuredBuffer', () => {
                 c: number;
             };
 
-            const record = { a: 1, b: 1, c: 1 };
+            const record = {
+                a: 1, b: 1, c: 1,
+            };
             const buffer = new StructuredBuffer<SequentialStruct, Float32Array>(
                 record,
                 Float32Array,
-                2
+                2,
             );
 
             buffer.setField(0, 'a', 1);
@@ -255,11 +265,13 @@ describe('StructuredBuffer', () => {
                 vec3: [number, number, number];
             };
 
-            const record = { scalar1: 1, vec2: 2, scalar2: 1, vec3: 3 };
+            const record = {
+                scalar1: 1, vec2: 2, scalar2: 1, vec3: 3,
+            };
             const buffer = new StructuredBuffer<MixedOffsetStruct, Float32Array>(
                 record,
                 Float32Array,
-                1
+                1,
             );
 
             buffer.setField(0, 'scalar1', 1);
@@ -268,13 +280,13 @@ describe('StructuredBuffer', () => {
             buffer.setField(0, 'vec3', [5, 6, 7]);
 
             // Verify contiguous layout
-            expect(buffer.data[0]).toBe(1);   // scalar1 at offset 0
-            expect(buffer.data[1]).toBe(2);   // vec2[0] at offset 1
-            expect(buffer.data[2]).toBe(3);   // vec2[1] at offset 2
-            expect(buffer.data[3]).toBe(4);   // scalar2 at offset 3
-            expect(buffer.data[4]).toBe(5);   // vec3[0] at offset 4
-            expect(buffer.data[5]).toBe(6);   // vec3[1] at offset 5
-            expect(buffer.data[6]).toBe(7);   // vec3[2] at offset 6
+            expect(buffer.data[0]).toBe(1); // scalar1 at offset 0
+            expect(buffer.data[1]).toBe(2); // vec2[0] at offset 1
+            expect(buffer.data[2]).toBe(3); // vec2[1] at offset 2
+            expect(buffer.data[3]).toBe(4); // scalar2 at offset 3
+            expect(buffer.data[4]).toBe(5); // vec3[0] at offset 4
+            expect(buffer.data[5]).toBe(6); // vec3[1] at offset 5
+            expect(buffer.data[6]).toBe(7); // vec3[2] at offset 6
         });
     });
 
@@ -286,11 +298,13 @@ describe('StructuredBuffer', () => {
                 scale: [number, number];
             };
 
-            const record = { position: 2, rotation: 1, scale: 2 };
+            const record = {
+                position: 2, rotation: 1, scale: 2,
+            };
             const buffer = new StructuredBuffer<TransformStruct, Float32Array>(
                 record,
                 Float32Array,
-                5
+                5,
             );
 
             // Set data for multiple entities
@@ -318,7 +332,7 @@ describe('StructuredBuffer', () => {
             const buffer = new StructuredBuffer<StateStruct, Float32Array>(
                 record,
                 Float32Array,
-                3
+                3,
             );
 
             // Initial state
@@ -352,7 +366,7 @@ describe('StructuredBuffer', () => {
             const buffer = new StructuredBuffer<FloatStruct, Float32Array>(
                 record,
                 Float32Array,
-                2
+                2,
             );
 
             buffer.setField(0, 'value', 3.14159);
@@ -368,7 +382,7 @@ describe('StructuredBuffer', () => {
             const buffer = new StructuredBuffer<UintStruct, Uint32Array>(
                 record,
                 Uint32Array,
-                2
+                2,
             );
 
             buffer.setField(0, 'id', 4294967295); // Max uint32
@@ -383,11 +397,13 @@ describe('StructuredBuffer', () => {
                 a: number;
             };
 
-            const record = { r: 1, g: 1, b: 1, a: 1 };
+            const record = {
+                r: 1, g: 1, b: 1, a: 1,
+            };
             const buffer = new StructuredBuffer<ByteStruct, Uint8Array>(
                 record,
                 Uint8Array,
-                2
+                2,
             );
 
             buffer.setField(0, 'r', 255);
@@ -412,7 +428,7 @@ describe('StructuredBuffer', () => {
             const buffer = new StructuredBuffer<EmptyStruct, Float32Array>(
                 record,
                 Float32Array,
-                0
+                0,
             );
 
             expect(buffer.count).toBe(0);
@@ -429,7 +445,7 @@ describe('StructuredBuffer', () => {
             const buffer = new StructuredBuffer<SingleFieldStruct, Float32Array>(
                 record,
                 Float32Array,
-                5
+                5,
             );
 
             buffer.setField(2, 'value', 42);
@@ -446,7 +462,7 @@ describe('StructuredBuffer', () => {
             const buffer = new StructuredBuffer<LargeStruct, Float32Array>(
                 record,
                 Float32Array,
-                2
+                2,
             );
 
             const identity = [
@@ -474,7 +490,7 @@ describe('StructuredBuffer', () => {
             const buffer = new StructuredBuffer<SimpleStruct, Float32Array>(
                 record,
                 Float32Array,
-                count
+                count,
             );
 
             buffer.setField(count - 1, 'value', 999);
@@ -493,7 +509,7 @@ describe('StructuredBuffer', () => {
             const buffer = new StructuredBuffer<BaseStruct, Float32Array>(
                 record,
                 Float32Array,
-                5
+                5,
             );
 
             expect(buffer.stride).toBe(2);
@@ -502,7 +518,7 @@ describe('StructuredBuffer', () => {
             expect(buffer.data.length).toBe(10);
         });
 
-        it('should work with base class get/set methods', () => {
+        it('should work with base class at/set methods', () => {
             type VecStruct = {
                 a: number;
                 b: number;
@@ -512,7 +528,7 @@ describe('StructuredBuffer', () => {
             const buffer = new StructuredBuffer<VecStruct, Float32Array>(
                 record,
                 Float32Array,
-                3
+                3,
             );
 
             // Use base class set (by index, not field name)
@@ -520,8 +536,8 @@ describe('StructuredBuffer', () => {
             buffer.set([30, 40], 1);
 
             // Use base class get
-            expect(buffer.get(0)).toEqual([10, 20]);
-            expect(buffer.get(1)).toEqual([30, 40]);
+            expect(buffer.at(0)).toEqual([10, 20]);
+            expect(buffer.at(1)).toEqual([30, 40]);
 
             // Verify getField still works
             expect(buffer.getField(0, 'a')).toBe(10);
@@ -538,7 +554,7 @@ describe('StructuredBuffer', () => {
             const buffer = new StructuredBuffer<IterStruct, Float32Array>(
                 record,
                 Float32Array,
-                3
+                3,
             );
 
             buffer.setField(0, 'x', 1);
@@ -577,7 +593,7 @@ describe('StructuredBuffer', () => {
             const buffer = new StructuredBuffer<Particle, Float32Array>(
                 record,
                 Float32Array,
-                1000
+                1000,
             );
 
             // Set particle 500
@@ -617,7 +633,7 @@ describe('StructuredBuffer', () => {
             const buffer = new StructuredBuffer<InstanceData, Float32Array>(
                 record,
                 Float32Array,
-                10000
+                10000,
             );
 
             expect(buffer.stride).toBe(6);
