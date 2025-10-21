@@ -157,6 +157,16 @@ export class Matrix4Float32Array extends PackedBuffer<Float32Array> {
         super(Float32Array, 16, count);
     }
 }
+
+export type PackedArray = Vector2Uint32Array
+    | Vector3Uint32Array
+    | Vector2Float32Array
+    | Vector3Float32Array
+    | Matrix3Float32Array
+    | Matrix4Float32Array;
+
+export interface PackedArrayConstructor<Type extends PackedArray = PackedArray> {
+    new (count: number): Type;
 }
 
 export default PackedBuffer;
