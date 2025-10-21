@@ -81,10 +81,10 @@ export class Vector2Uint32Array extends PackedBuffer<Uint32Array> {
     /**
      * Creates a new Vector2Uint32Array.
      *
-     * @param length - Number of 2D vectors to store
+     * @param count - Number of 2D vectors to store
      */
-    public constructor(length: number) {
-        super(Uint32Array, 2, length);
+    public constructor(count: number) {
+        super(Uint32Array, 2, count);
     }
 }
 
@@ -95,10 +95,10 @@ export class Vector3Uint32Array extends PackedBuffer<Uint32Array> {
     /**
      * Creates a new Vector3Uint32Array.
      *
-     * @param length - Number of 3D vectors to store
+     * @param count - Number of 3D vectors to store
      */
-    public constructor(length: number) {
-        super(Uint32Array, 3, length);
+    public constructor(count: number) {
+        super(Uint32Array, 3, count);
     }
 }
 
@@ -109,10 +109,10 @@ export class Vector2Float32Array extends PackedBuffer<Float32Array> {
     /**
      * Creates a new Vector2Float32Array.
      *
-     * @param length - Number of 2D vectors to store
+     * @param count - Number of 2D vectors to store
      */
-    public constructor(length: number) {
-        super(Float32Array, 2, length);
+    public constructor(count: number) {
+        super(Float32Array, 2, count);
     }
 }
 
@@ -123,10 +123,10 @@ export class Vector3Float32Array extends PackedBuffer<Float32Array> {
     /**
      * Creates a new Vector3Float32Array.
      *
-     * @param length - Number of 3D vectors to store
+     * @param count - Number of 3D vectors to store
      */
-    public constructor(length: number) {
-        super(Float32Array, 3, length);
+    public constructor(count: number) {
+        super(Float32Array, 3, count);
     }
 }
 
@@ -137,10 +137,10 @@ export class Matrix3Float32Array extends PackedBuffer<Float32Array> {
     /**
      * Creates a new Matrix3Float32Array.
      *
-     * @param length - Number of 3x3 matrices to store
+     * @param count - Number of 3x3 matrices to store
      */
-    public constructor(length: number) {
-        super(Float32Array, 9, length);
+    public constructor(count: number) {
+        super(Float32Array, 9, count);
     }
 }
 
@@ -151,11 +151,12 @@ export class Matrix4Float32Array extends PackedBuffer<Float32Array> {
     /**
      * Creates a new Matrix4Float32Array.
      *
-     * @param length - Number of 4x4 matrices to store
+     * @param count - Number of 4x4 matrices to store
      */
-    public constructor(length: number) {
-        super(Float32Array, 16, length);
+    public constructor(count: number) {
+        super(Float32Array, 16, count);
     }
+}
 }
 
 export default PackedBuffer;
