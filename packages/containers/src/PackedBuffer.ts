@@ -37,7 +37,7 @@ class PackedBuffer<Type extends TypedArray> {
      * @param   target - Optional array to write results into (avoids allocation)
      * @returns          Array containing the item elements
      */
-    public get(offset: number, target?: number[]): number[] {
+    public at(offset: number, target?: number[]): number[] {
         const _index = offset * this.stride;
         const arr    = target ?? this.#tempArr;
 
@@ -69,7 +69,7 @@ class PackedBuffer<Type extends TypedArray> {
      */
     public *[Symbol.iterator](): Generator<number[], void, undefined> {
         for (let i = 0; i < this.count; i++) {
-            yield this.get(i, []);
+            yield this.at(i, []);
         }
     }
 }

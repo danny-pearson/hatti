@@ -25,8 +25,8 @@ describe('PackedBuffer', () => {
             arr.set([1.5, 2.5], 0);
             arr.set([3.5, 4.5], 1);
 
-            expect(arr.get(0)).toEqual([1.5, 2.5]);
-            expect(arr.get(1)).toEqual([3.5, 4.5]);
+            expect(arr.at(0)).toEqual([1.5, 2.5]);
+            expect(arr.at(1)).toEqual([3.5, 4.5]);
         });
 
         it('should use target array when provided', () => {
@@ -34,7 +34,7 @@ describe('PackedBuffer', () => {
             const target = [0, 0];
 
             arr.set([10, 20], 2);
-            const result = arr.get(2, target);
+            const result = arr.at(2, target);
 
             expect(result).toBe(target);
             expect(target).toEqual([10, 20]);
@@ -94,7 +94,7 @@ describe('PackedBuffer', () => {
             const arr = new Vector2Uint32Array(5);
 
             arr.set([100, 200], 0);
-            expect(arr.get(0)).toEqual([100, 200]);
+            expect(arr.at(0)).toEqual([100, 200]);
         });
     });
 
@@ -110,7 +110,7 @@ describe('PackedBuffer', () => {
             const arr = new Vector3Float32Array(5);
 
             arr.set([1.5, 2.5, 3.5], 0);
-            expect(arr.get(0)).toEqual([1.5, 2.5, 3.5]);
+            expect(arr.at(0)).toEqual([1.5, 2.5, 3.5]);
         });
     });
 
@@ -137,7 +137,7 @@ describe('PackedBuffer', () => {
             const matrix = [1, 0, 0, 0, 1, 0, 0, 0, 1];
 
             arr.set(matrix, 0);
-            expect(arr.get(0)).toEqual(matrix);
+            expect(arr.at(0)).toEqual(matrix);
         });
     });
 
@@ -155,7 +155,7 @@ describe('PackedBuffer', () => {
             const matrix = [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1];
 
             arr.set(matrix, 0);
-            expect(arr.get(0)).toEqual(matrix);
+            expect(arr.at(0)).toEqual(matrix);
         });
     });
 
@@ -172,7 +172,7 @@ describe('PackedBuffer', () => {
             const arr = new Vector2Float32Array(1);
 
             arr.set([42, 43], 0);
-            expect(arr.get(0)).toEqual([42, 43]);
+            expect(arr.at(0)).toEqual([42, 43]);
         });
 
         it('should handle accessing different indices', () => {
@@ -182,9 +182,9 @@ describe('PackedBuffer', () => {
             arr.set([4, 5, 6], 5);
             arr.set([7, 8, 9], 9);
 
-            expect(arr.get(0)).toEqual([1, 2, 3]);
-            expect(arr.get(5)).toEqual([4, 5, 6]);
-            expect(arr.get(9)).toEqual([7, 8, 9]);
+            expect(arr.at(0)).toEqual([1, 2, 3]);
+            expect(arr.at(5)).toEqual([4, 5, 6]);
+            expect(arr.at(9)).toEqual([7, 8, 9]);
         });
     });
 
@@ -206,19 +206,19 @@ describe('PackedBuffer', () => {
             arr.set([13, 14, 15], 4);
 
             // Verify all elements remain unchanged
-            expect(arr.get(0)).toEqual([1, 2, 3]);
-            expect(arr.get(1)).toEqual([4, 5, 6]);
-            expect(arr.get(2)).toEqual([7, 8, 9]);
-            expect(arr.get(3)).toEqual([10, 11, 12]);
-            expect(arr.get(4)).toEqual([13, 14, 15]);
+            expect(arr.at(0)).toEqual([1, 2, 3]);
+            expect(arr.at(1)).toEqual([4, 5, 6]);
+            expect(arr.at(2)).toEqual([7, 8, 9]);
+            expect(arr.at(3)).toEqual([10, 11, 12]);
+            expect(arr.at(4)).toEqual([13, 14, 15]);
 
             // Modify middle element
             arr.set([100, 200, 300], 2);
 
             // Verify surrounding elements unchanged
-            expect(arr.get(1)).toEqual([4, 5, 6]);
-            expect(arr.get(2)).toEqual([100, 200, 300]);
-            expect(arr.get(3)).toEqual([10, 11, 12]);
+            expect(arr.at(1)).toEqual([4, 5, 6]);
+            expect(arr.at(2)).toEqual([100, 200, 300]);
+            expect(arr.at(3)).toEqual([10, 11, 12]);
         });
 
         it('should handle partial updates correctly', () => {
@@ -231,9 +231,9 @@ describe('PackedBuffer', () => {
             // Update only middle element
             arr.set([99, 88], 1);
 
-            expect(arr.get(0)).toEqual([10, 20]);
-            expect(arr.get(1)).toEqual([99, 88]);
-            expect(arr.get(2)).toEqual([50, 60]);
+            expect(arr.at(0)).toEqual([10, 20]);
+            expect(arr.at(1)).toEqual([99, 88]);
+            expect(arr.at(2)).toEqual([50, 60]);
         });
     });
 
@@ -282,13 +282,13 @@ describe('PackedBuffer', () => {
             arr.set([4, 5, 6], 1);
             arr.set([7, 8, 9], 2);
 
-            arr.get(0, target);
+            arr.at(0, target);
             expect(target).toEqual([1, 2, 3]);
 
-            arr.get(1, target);
+            arr.at(1, target);
             expect(target).toEqual([4, 5, 6]);
 
-            arr.get(2, target);
+            arr.at(2, target);
             expect(target).toEqual([7, 8, 9]);
         });
 
@@ -297,7 +297,7 @@ describe('PackedBuffer', () => {
             const oversizedTarget = [0, 0, 0, 0, 0];
 
             arr.set([10, 20], 0);
-            const result = arr.get(0, oversizedTarget);
+            const result = arr.at(0, oversizedTarget);
 
             expect(result).toBe(oversizedTarget);
             expect(oversizedTarget[0]).toBe(10);
@@ -315,8 +315,8 @@ describe('PackedBuffer', () => {
             arr.set([1.7, 2.9], 0);
             arr.set([4294967295, 0], 1); // Max uint32
 
-            expect(arr.get(0)).toEqual([1, 2]);
-            expect(arr.get(1)).toEqual([4294967295, 0]);
+            expect(arr.at(0)).toEqual([1, 2]);
+            expect(arr.at(1)).toEqual([4294967295, 0]);
         });
 
         it('should handle different typed arrays independently', () => {
@@ -326,8 +326,8 @@ describe('PackedBuffer', () => {
             floatArr.set([1.5, 2.5], 0);
             uintArr.set([1.5, 2.5], 0);
 
-            expect(floatArr.get(0)).toEqual([1.5, 2.5]);
-            expect(uintArr.get(0)).toEqual([1, 2]);
+            expect(floatArr.at(0)).toEqual([1.5, 2.5]);
+            expect(uintArr.at(0)).toEqual([1, 2]);
         });
     });
 
@@ -341,8 +341,8 @@ describe('PackedBuffer', () => {
             arr.set([1, 2], 0);
             arr.set([3, 4], 9999);
 
-            expect(arr.get(0)).toEqual([1, 2]);
-            expect(arr.get(9999)).toEqual([3, 4]);
+            expect(arr.at(0)).toEqual([1, 2]);
+            expect(arr.at(9999)).toEqual([3, 4]);
         });
 
         it('should iterate over large arrays efficiently', () => {
@@ -373,7 +373,7 @@ describe('PackedBuffer', () => {
             ];
 
             arr.set(identity, 0);
-            expect(arr.get(0)).toEqual(identity);
+            expect(arr.at(0)).toEqual(identity);
         });
 
         it('should handle identity matrix for Matrix4', () => {
@@ -386,7 +386,7 @@ describe('PackedBuffer', () => {
             ];
 
             arr.set(identity, 0);
-            expect(arr.get(0)).toEqual(identity);
+            expect(arr.at(0)).toEqual(identity);
         });
 
         it('should store multiple matrices independently', () => {
@@ -400,9 +400,9 @@ describe('PackedBuffer', () => {
             arr.set(mat2, 1);
             arr.set(mat3, 2);
 
-            expect(arr.get(0)).toEqual(mat1);
-            expect(arr.get(1)).toEqual(mat2);
-            expect(arr.get(2)).toEqual(mat3);
+            expect(arr.at(0)).toEqual(mat1);
+            expect(arr.at(1)).toEqual(mat2);
+            expect(arr.at(2)).toEqual(mat3);
         });
     });
 });
