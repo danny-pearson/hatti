@@ -111,6 +111,11 @@ class Surface {
         this.context = new CanvasContext(this.el);
     }
 
+    /**
+     * Gets the rendering context for this surface.
+     *
+     * @returns The CanvasContext instance for drawing operations
+     */
     public getContext() {
         return this.context;
     }
@@ -207,10 +212,20 @@ class Surface {
         return this._isFullscreen;
     }
 
+    /**
+     * Gets the logical width of the canvas in pixels.
+     *
+     * @returns The canvas width
+     */
     get width() {
         return this.el.width;
     }
 
+    /**
+     * Gets the logical height of the canvas in pixels.
+     *
+     * @returns The canvas height
+     */
     get height() {
         return this.el.height;
     }

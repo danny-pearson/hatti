@@ -5,14 +5,26 @@ import ContextProxy from './ContextProxy';
 import type { ConstEnum } from '@hatti/shared';
 // import ImageBuffer from './ImageBuffer.js';
 
+/**
+ * Vertex kinds for custom shape rendering.
+ */
 const VertexKind = {
     NORMAL: 0,
     CURVE:  1,
     BEZIER: 2,
 } as const;
 
+/**
+ * Tuple representing a shape vertex with position and kind.
+ */
 type ShapeVertex = [x: number, y: number, kind: ConstEnum<typeof VertexKind>];
 
+/**
+ * Extended 2D rendering context with custom shape drawing and coordinate system utilities.
+ *
+ * Provides Processing-like shape API (beginShape/vertex/endShape), virtual coordinate systems,
+ * zoom controls, and convenience methods for common shapes (circle, triangle, pentagon, etc.).
+ */
 class CanvasContext extends ContextProxy implements CanvasRenderingContext2D {
     public readonly width: number;
 
@@ -30,6 +42,11 @@ class CanvasContext extends ContextProxy implements CanvasRenderingContext2D {
 
     private _clearColor: string | null;
 
+    /**
+     * Creates a new extended rendering context for the given canvas.
+     *
+     * @param canvas - The HTMLCanvasElement or OffscreenCanvas to render to
+     */
     constructor(canvas: HTMLCanvasElement | OffscreenCanvas) {
         super(canvas);
 
@@ -51,6 +68,15 @@ class CanvasContext extends ContextProxy implements CanvasRenderingContext2D {
         this.lineCap = 'round';
     }
 
+    /**
+     * Draws a rectangle centered at the given position.
+     *
+     * @param x      - X coordinate of rectangle center
+     * @param y      - Y coordinate of rectangle center
+     * @param width  - Width of the rectangle
+     * @param height - Height of the rectangle
+     * @param flags  - Optional FILL and/or STROKE flags
+     */
     public override rect(x: number, y: number, width: number, height: number, flags?: number) {
         this.save();
         this.beginPath();
@@ -64,6 +90,14 @@ class CanvasContext extends ContextProxy implements CanvasRenderingContext2D {
         }
     }
 
+    /**
+     * Draws a circle at the given position.
+     *
+     * @param x      - X coordinate of circle center
+     * @param y      - Y coordinate of circle center
+     * @param radius - Radius of the circle
+     * @param flags  - Optional FILL and/or STROKE flags
+     */
     public circle(
         x: number,
         y: number,
@@ -79,6 +113,17 @@ class CanvasContext extends ContextProxy implements CanvasRenderingContext2D {
         }
     };
 
+    /**
+     * Draws a triangle with the given vertices.
+     *
+     * @param x1    - X coordinate of first vertex
+     * @param y1    - Y coordinate of first vertex
+     * @param x2    - X coordinate of second vertex
+     * @param y2    - Y coordinate of second vertex
+     * @param x3    - X coordinate of third vertex
+     * @param y3    - Y coordinate of third vertex
+     * @param flags - Optional FILL and/or STROKE flags
+     */
     public triangle(
         x1: number, y1: number,
         x2: number, y2: number,
@@ -94,6 +139,19 @@ class CanvasContext extends ContextProxy implements CanvasRenderingContext2D {
         this.endShape(flags);
     }
 
+    /**
+     * Draws a quadrilateral with the given vertices.
+     *
+     * @param x1    - X coordinate of first vertex
+     * @param y1    - Y coordinate of first vertex
+     * @param x2    - X coordinate of second vertex
+     * @param y2    - Y coordinate of second vertex
+     * @param x3    - X coordinate of third vertex
+     * @param y3    - Y coordinate of third vertex
+     * @param x4    - X coordinate of fourth vertex
+     * @param y4    - Y coordinate of fourth vertex
+     * @param flags - Optional FILL and/or STROKE flags
+     */
     public quad(
         x1: number, y1: number, x2: number, y2: number,
         x3: number, y3: number, x4: number, y4: number,
@@ -109,6 +167,14 @@ class CanvasContext extends ContextProxy implements CanvasRenderingContext2D {
         this.endShape(flags);
     }
 
+    /**
+     * Draws a regular pentagon centered at the given position.
+     *
+     * @param x      - X coordinate of pentagon center
+     * @param y      - Y coordinate of pentagon center
+     * @param radius - Radius from center to vertices
+     * @param flags  - Optional FILL and/or STROKE flags
+     */
     public pentagon(
         x: number, y: number, radius: number, flags?: number,
     ): void {
@@ -126,6 +192,14 @@ class CanvasContext extends ContextProxy implements CanvasRenderingContext2D {
         this.endShape(flags);
     }
 
+    /**
+     * Draws a regular hexagon centered at the given position.
+     *
+     * @param x      - X coordinate of hexagon center
+     * @param y      - Y coordinate of hexagon center
+     * @param radius - Radius from center to vertices
+     * @param flags  - Optional FILL and/or STROKE flags
+     */
     public hexagon(
         x: number, y: number, radius: number, flags?: number,
     ): void {
@@ -143,6 +217,15 @@ class CanvasContext extends ContextProxy implements CanvasRenderingContext2D {
         this.endShape(flags);
     }
 
+    /**
+     * Draws a capsule shape (rounded rectangle) at the given position.
+     *
+     * @param x      - X coordinate of capsule center
+     * @param y      - Y coordinate of capsule center
+     * @param width  - Width of the capsule (clamped to 75% of height)
+     * @param height - Height of the capsule
+     * @param flags  - Optional FILL and/or STROKE flags
+     */
     public capsule(x: number, y: number, width: number, height: number, flags?: number) {
         this.beginPath();
 
@@ -157,16 +240,31 @@ class CanvasContext extends ContextProxy implements CanvasRenderingContext2D {
         }
     }
 
+    /**
+     * Enables or disables debug visualization of shape vertices.
+     *
+     * @param value - Whether to draw debug circles at each vertex
+     */
     public debugShape(value: boolean) {
         this._debugShapeVertices = value;
     }
 
+    /**
+     * Begins a new custom shape.
+     *
+     * Call vertex methods to add points, then endShape to render.
+     */
     public beginShape() {
         this._currentShape = [];
 
         this.beginPath();
     }
 
+    /**
+     * Ends and renders the current custom shape.
+     *
+     * @param flags - Optional FILL and/or STROKE flags
+     */
     public endShape(flags?: number) {
         if (!this._currentShape) return;
 
@@ -234,24 +332,50 @@ class CanvasContext extends ContextProxy implements CanvasRenderingContext2D {
         }
     }
 
+    /**
+     * Adds a normal vertex to the current shape.
+     *
+     * @param x - X coordinate of the vertex
+     * @param y - Y coordinate of the vertex
+     */
     public vertex(x: number, y: number) {
         if (!this._currentShape) return;
 
         this._currentShape.push([x, y, VertexKind.NORMAL]);
     }
 
+    /**
+     * Adds a curve vertex to the current shape using Catmull-Rom interpolation.
+     *
+     * @param x - X coordinate of the vertex
+     * @param y - Y coordinate of the vertex
+     */
     public curveVertex(x: number, y: number) {
         if (!this._currentShape) return;
 
         this._currentShape.push([x, y, VertexKind.CURVE]);
     }
 
+    /**
+     * Adds a bezier curve vertex to the current shape.
+     *
+     * @param x - X coordinate of the vertex
+     * @param y - Y coordinate of the vertex
+     */
     public bezierVertex(x: number, y: number) {
         if (!this._currentShape) return;
 
         this._currentShape.push([x, y, VertexKind.BEZIER]);
     }
 
+    /**
+     * Sets up a virtual coordinate system with a specified width.
+     *
+     * The height is calculated based on aspect ratio. Transforms the canvas so (0,0)
+     * is at the center and Y-axis points up.
+     *
+     * @param width - The virtual width of the coordinate system
+     */
     public useVirtualCoordinates(width: number) {
         this._virtualWidth = width;
 
@@ -260,6 +384,13 @@ class CanvasContext extends ContextProxy implements CanvasRenderingContext2D {
         this.setTransform(this.width / width, 0, 0, -this.height / virtualHeight, this.width / 2, this.height / 2);
     }
 
+    /**
+     * Converts screen coordinates to world coordinates accounting for current transform.
+     *
+     * @param   x - Screen X coordinate
+     * @param   y - Screen Y coordinate
+     * @returns     DOMPoint with world coordinates
+     */
     public getAbsoluteWorldPoint(x: number, y: number) {
         const originalPoint = new DOMPoint(x, y);
 
@@ -269,6 +400,13 @@ class CanvasContext extends ContextProxy implements CanvasRenderingContext2D {
             .transformPoint(originalPoint);
     }
 
+    /**
+     * Converts virtual coordinates to screen pixel coordinates.
+     *
+     * @param   x - Virtual X coordinate
+     * @param   y - Virtual Y coordinate
+     * @returns     Array of [screenX, screenY]
+     */
     public virtualCoordsToScreen(x: number, y: number) {
         if (!this._virtualWidth) return [x, y];
 
@@ -280,6 +418,15 @@ class CanvasContext extends ContextProxy implements CanvasRenderingContext2D {
         ];
     }
 
+    /**
+     * Converts world coordinates to screen pixel coordinates.
+     *
+     * Accounts for virtual coordinate system with centered origin and flipped Y-axis.
+     *
+     * @param   x - World X coordinate
+     * @param   y - World Y coordinate
+     * @returns     Array of [screenX, screenY]
+     */
     public worldToScreen(x: number, y: number) {
         if (!this._virtualWidth) return [x, y];
 
@@ -330,6 +477,11 @@ class CanvasContext extends ContextProxy implements CanvasRenderingContext2D {
     //     // }
     // }
 
+    /**
+     * Sets the zoom level for the canvas.
+     *
+     * @param value - The zoom multiplier (1 = normal, 2 = 2x zoom, etc.)
+     */
     public setZoom(value: number) {
         this.zoom = value;
 
@@ -338,16 +490,31 @@ class CanvasContext extends ContextProxy implements CanvasRenderingContext2D {
         });
     }
 
+    /**
+     * Sets the clear color used when clearing the canvas.
+     *
+     * @param color - CSS color string (e.g., '#000000', 'rgb(0,0,0)')
+     */
     public setClearColor(color: string) {
         this._clearColor = color;
     }
 
+    /**
+     * Sets the line width accounting for virtual coordinates.
+     *
+     * @param value - Line width in virtual or pixel units
+     */
     public setLineWidth(value: number) {
         this.lineWidth = this._virtualWidth
             ? value / (this.width / this._virtualWidth)
             : value;
     }
 
+    /**
+     * Clears the canvas.
+     *
+     * If a clear color is set, fills with that color. Otherwise uses clearRect.
+     */
     public clear() {
         if (this._clearColor) {
             this.fillStyle = this._clearColor;
@@ -358,6 +525,11 @@ class CanvasContext extends ContextProxy implements CanvasRenderingContext2D {
         this.clearRect(0, 0, this.width, this.height);
     }
 
+    /**
+     * Gets the aspect ratio (height / width) of the canvas.
+     *
+     * @returns The aspect ratio
+     */
     get aspectRatio() {
         return this.height / this.width;
     }
