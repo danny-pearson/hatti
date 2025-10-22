@@ -6,7 +6,12 @@ import type { PackedArray, PackedArrayConstructor } from './PackedBuffer.js';
  *
  * Provides efficient storage for collections of entities with multiple attributes
  * by storing each attribute in a separate contiguous array (SOA layout), which
- * improves cache locality and enables SIMD optimizations.
+ * improves cache locality and enables better JIT optimizations.
+ *
+ * TypedArrays provide consistent 2-10x performance improvements over regular arrays
+ * for numerical computations due to contiguous memory layout and lack of boxing overhead.
+ * Modern JS engines may apply SIMD auto-vectorization in some cases, though this is
+ * not guaranteed and varies by engine and access pattern.
  *
  * This base class uses indices directly as entity identifiers. For sparse entity IDs
  * or systems with frequent entity creation/deletion, use DenseAttributeTable instead.
