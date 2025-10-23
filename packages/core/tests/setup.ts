@@ -196,3 +196,44 @@ if (typeof ImageData === 'undefined') {
         }
     } as any;
 }
+
+// Mock DOMPoint if not available (needed for MouseModule tests)
+if (typeof DOMPoint === 'undefined') {
+    global.DOMPoint = class MockDOMPoint {
+        public x: number;
+        public y: number;
+        public z: number;
+        public w: number;
+
+        constructor(x = 0, y = 0, z = 0, w = 1) {
+            this.x = x;
+            this.y = y;
+            this.z = z;
+            this.w = w;
+        }
+
+        static fromPoint(): MockDOMPoint {
+            return new MockDOMPoint();
+        }
+    } as any;
+}
+
+// Mock DOMMatrix if not available (needed for MouseModule tests)
+if (typeof DOMMatrix === 'undefined') {
+    global.DOMMatrix = class MockDOMMatrix {
+        public a = 1;
+        public b = 0;
+        public c = 0;
+        public d = 1;
+        public e = 0;
+        public f = 0;
+
+        invertSelf(): this {
+            return this;
+        }
+
+        transformPoint(point: DOMPoint): DOMPoint {
+            return point;
+        }
+    } as any;
+}
