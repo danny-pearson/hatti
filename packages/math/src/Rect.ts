@@ -43,29 +43,6 @@ class Rect implements DOMRect {
     }
 
     /**
-     * Converts the rectangle to an array [x, y, width, height].
-     *
-     * @returns Array representation of the rectangle
-     */
-    public toArray(): RectLike {
-        return [this.x, this.y, this.width, this.height];
-    }
-
-    /**
-     * Creates a JSON representation of the rectangle.
-     *
-     * @returns Object containing x, y, width, and height properties
-     */
-    public toJSON(): RectFields {
-        return {
-            x:      this.x,
-            y:      this.y,
-            width:  this.width,
-            height: this.height,
-        };
-    }
-
-    /**
      * Checks if this rectangle intersects with another rectangle (AABB collision).
      *
      * @param   other - The other rectangle to check intersection with
@@ -160,6 +137,29 @@ class Rect implements DOMRect {
      */
     public getCenter(): [number, number] {
         return [this.x + this.width / 2, this.y + this.height / 2];
+    }
+
+    /**
+     * Converts the rectangle to an array [x, y, width, height].
+     *
+     * @returns Array representation of the rectangle
+     */
+    public toArray(): RectLike {
+        return [this.x, this.y, this.width, this.height];
+    }
+
+    /**
+     * Creates a JSON representation of the rectangle.
+     *
+     * @returns Object containing x, y, width, and height properties
+     */
+    public toJSON(): RectFields {
+        return {
+            x:      this.x,
+            y:      this.y,
+            width:  this.width,
+            height: this.height,
+        };
     }
 
     /**
