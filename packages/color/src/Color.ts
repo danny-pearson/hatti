@@ -176,9 +176,9 @@ export const uint32ToHex = (value: number): string => {
         console.warn('[uint32ToHex]: Value is greater than 32 bits');
     }
 
-    const _value = _clamp32(value);
+    const _value = _clamp32(value > 0xfff ? value : expand12to24(value));
 
-    return `#${_value.toString(16)}`;
+    return `#${_value.toString(16).padStart(6, '0')}`;
 };
 
 /**
