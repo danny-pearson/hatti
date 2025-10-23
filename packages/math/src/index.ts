@@ -5,6 +5,7 @@ export * from './utils.js';
 export * as Vec2Ops from './Vec2Ops.js';
 export * as Mat3Ops from './Mat3Ops.js';
 export * as Mat4Ops from './Mat4Ops.js';
+export * as RectOps from './RectOps.js';
 export { default as Rect } from './Rect.js';
 export { default as Vector2 } from './Vector2.js';
 export { default as Matrix3 } from './Matrix3.js';
