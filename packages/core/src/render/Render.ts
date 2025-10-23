@@ -22,7 +22,7 @@ export const setFill = (color: string | number) => {
  * @param color - Color as a string (e.g., '#ff0000') or uint32 number
  * @param width - Optional line width in pixels
  */
-export const setStroke = (color: string, width?: number) => {
+export const setStroke = (color: string | number, width?: number) => {
     const context = assertContext();
 
     context.strokeStyle = isString(color) ? color : Color.uint32ToHex(color);
@@ -546,6 +546,59 @@ export const capsule = (
     const context = assertContext();
 
     context.capsule(x, y, width, height, flags);
+};
+
+/**
+ * Draws an equilateral triangle.
+ *
+ * @param x        - Center X coordinate
+ * @param y        - Center Y coordinate
+ * @param radius   - Radius from center to vertices
+ * @param rotation - Optional rotation in radians (default: 0, pointing up)
+ * @param flags    - Optional rendering flags (FILL, STROKE)
+ */
+export const triangle = (
+    x:        number,
+    y:        number,
+    radius:   number,
+    rotation: number = 0,
+    flags?:   number,
+) => {
+    const context = assertContext();
+
+    context.triangle(x, y, radius, rotation, flags);
+};
+
+/**
+ * Draws a regular pentagon.
+ *
+ * @param x      - Center X coordinate
+ * @param y      - Center Y coordinate
+ * @param radius - Radius from center to vertices
+ * @param flags  - Optional rendering flags (FILL, STROKE)
+ */
+export const pentagon = (
+    x: number, y: number, radius: number, flags?: number,
+) => {
+    const context = assertContext();
+
+    context.pentagon(x, y, radius, flags);
+};
+
+/**
+ * Draws a regular hexagon.
+ *
+ * @param x      - Center X coordinate
+ * @param y      - Center Y coordinate
+ * @param radius - Radius from center to vertices
+ * @param flags  - Optional rendering flags (FILL, STROKE)
+ */
+export const hexagon = (
+    x: number, y: number, radius: number, flags?: number,
+) => {
+    const context = assertContext();
+
+    context.hexagon(x, y, radius, flags);
 };
 
 /**

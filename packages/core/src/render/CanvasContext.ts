@@ -114,55 +114,31 @@ class CanvasContext extends ContextProxy implements CanvasRenderingContext2D {
     };
 
     /**
-     * Draws a triangle with the given vertices.
+     * Draws an equilateral triangle centered at the given position.
      *
-     * @param x1    - X coordinate of first vertex
-     * @param y1    - Y coordinate of first vertex
-     * @param x2    - X coordinate of second vertex
-     * @param y2    - Y coordinate of second vertex
-     * @param x3    - X coordinate of third vertex
-     * @param y3    - Y coordinate of third vertex
-     * @param flags - Optional FILL and/or STROKE flags
+     * @param x        - X coordinate of triangle center
+     * @param y        - Y coordinate of triangle center
+     * @param radius   - Radius from center to vertices
+     * @param rotation - Optional rotation in radians (default: 0, pointing up)
+     * @param flags    - Optional FILL and/or STROKE flags
      */
     public triangle(
-        x1: number, y1: number,
-        x2: number, y2: number,
-        x3: number, y3: number,
+        x: number,
+        y: number,
+        radius: number,
+        rotation = 0,
         flags?: number,
     ): void {
         this.beginShape();
 
-        this.vertex(x1, y1);
-        this.vertex(x2, y2);
-        this.vertex(x3, y3);
+        for (let i = 0; i < 3; i++) {
+            const theta = rotation + (Math.PI / 2) - i * (TAU / 3);
 
-        this.endShape(flags);
-    }
+            const _x = x + radius * Math.cos(theta);
+            const _y = y + radius * Math.sin(theta);
 
-    /**
-     * Draws a quadrilateral with the given vertices.
-     *
-     * @param x1    - X coordinate of first vertex
-     * @param y1    - Y coordinate of first vertex
-     * @param x2    - X coordinate of second vertex
-     * @param y2    - Y coordinate of second vertex
-     * @param x3    - X coordinate of third vertex
-     * @param y3    - Y coordinate of third vertex
-     * @param x4    - X coordinate of fourth vertex
-     * @param y4    - Y coordinate of fourth vertex
-     * @param flags - Optional FILL and/or STROKE flags
-     */
-    public quad(
-        x1: number, y1: number, x2: number, y2: number,
-        x3: number, y3: number, x4: number, y4: number,
-        flags?: number,
-    ): void {
-        this.beginShape();
-
-        this.vertex(x1, y1);
-        this.vertex(x2, y2);
-        this.vertex(x3, y3);
-        this.vertex(x4, y4);
+            this.vertex(_x, _y);
+        }
 
         this.endShape(flags);
     }
@@ -231,8 +207,9 @@ class CanvasContext extends ContextProxy implements CanvasRenderingContext2D {
 
         const _width = clamp(width, 0, height * 0.75);
 
-        this.arc(x, y + (height) - (_width), _width, 0, Math.PI);
+        this.arc(x, y + height - _width, _width, 0, Math.PI);
         this.arc(x, y - height + _width, _width, Math.PI, 0);
+        this.lineTo(x + width, y + height - _width);
 
         if (typeof flags !== 'undefined') {
             if (Bitmask.hasAny(flags, FILL)) this.fill();
@@ -312,6 +289,8 @@ class CanvasContext extends ContextProxy implements CanvasRenderingContext2D {
                 continue;
             }
         }
+
+        this.closePath();
 
         this._currentShape = null;
 
